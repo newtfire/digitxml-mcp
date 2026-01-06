@@ -1,0 +1,48 @@
+# -----------------------
+# OS/system files (macOS & Windows)
+# -----------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# -----------------------
+# IDE/editor metadata
+# -----------------------
+.idea/
+*.iml
+
+# -----------------------
+# Python cache & environments
+# -----------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+Lib/
+Scripts/
+pyvenv.cfg
+etc/
+share/
+
+# -----------------------
+# Notebooks
+# -----------------------
+.ipynb_checkpoints/
+
+# -----------------------
+# Local config files
+# -----------------------
+.env/
+*.yaml
+
+
+# -----------------------
+# Logs and generated data
+# -----------------------
+logs/
+
