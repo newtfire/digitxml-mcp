@@ -1,0 +1,10 @@
+{
+  "xml_data_path": "./data/catalog.xml",
+  "xml_schema_path": "./schemas/*.rnc",
+  "backup_dir": "./backups",
+  "log_dir": "./logs",
+  "server": {
+    "host": "localhost",
+    "port": 3000
+  }
+}
