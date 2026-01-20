@@ -42,10 +42,11 @@ class SaxonXMLMCPServer:
         self.xpath_proc.set_context(xdm_item=self.xml_node)
 
         # Schema support
-        self.schema_validator = None
-        if self.schema_path and self.schema_path.exists():
-            self.schema_validator = self.saxon_proc.new_schema_validator()
-            self.schema_validator.register_schema(xsd_file=str(self.schema_path))
+        # 2026-01-20 ebb: This should probably be jing/trang or something for Relax NG validation. Temporarily commenting this out.
+        # self.schema_validator = None
+        # if self.schema_path and self.schema_path.exists():
+        #     self.schema_validator = self.saxon_proc.new_schema_validator()
+        #     self.schema_validator.register_schema(xsd_file=str(self.schema_path))
 
     def create_backup(self) -> str:
         """Create a timestamped backup of the current XML"""
