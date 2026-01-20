@@ -1,6 +1,6 @@
 {
-  "xml_data_path": "./data/catalog.xml",
-  "xml_schema_path": "./schemas/*.rnc",
+  "xml_data_path": "./data/syllabubRecipe.xml",
+  "xml_schema_path": "./schemas/recipe.rnc",
   "backup_dir": "./backups",
   "log_dir": "./logs",
   "server": {
