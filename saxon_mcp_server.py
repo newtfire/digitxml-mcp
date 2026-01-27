@@ -636,8 +636,8 @@ def create_mcp_server_config():
 if __name__ == "__main__":
     # Example usage
     server = SaxonXMLMCPServer(
-        xml_path="./data/catalog.xml",
-        schema_path="./schemas/catalog.xsd",
+        xml_path="./data/syllabubRecipe.xml",
+        schema_path="./schemas/recipe.rnc",
         backup_dir="./backups"
     )
 
