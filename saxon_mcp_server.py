@@ -93,8 +93,7 @@ class SaxonXMLMCPServer:
             xpath_proc.set_context(xdm_item=self.xml_node)
 
             # Evaluate
-            xpath_executable = xpath_proc.evaluate(xpath)
-            result = xpath_executable.evaluate()
+            result = xpath_proc.evaluate(xpath)
 
             if return_count:
                 count = result.size if hasattr(result, 'size') else len(list(result))
@@ -312,7 +311,7 @@ class SaxonXMLMCPServer:
                     "query": xpath,
                     "type": check_type,
                     "count": result["count"],
-                    "samples": result["results"][:5]  # First 5 samples
+                    "samples": result["results"][:10]  # First 5 samples
                 })
 
         return {
@@ -488,12 +487,9 @@ class SaxonXMLMCPServer:
 <xsl:stylesheet version="3.0" 
 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
      <xsl:mode on-no-match="shallow copy"/>
-    <!-- Identity template 
-    <xsl:template match="@*|node()">
-        <xsl:copy>
-            <xsl:apply-templates select="@*|node()"/>
-        </xsl:copy>
-    </xsl:template> -->
+    <xsl:template match="/">
+       <xsl:apply-templates/>
+    </xsl:template>
 
     <!-- Correction templates -->
 {''.join(templates)}
@@ -643,17 +639,13 @@ if __name__ == "__main__":
 
     # Example: Use XPath 3.1 features
     result = server.xpath_query(
-        "//product[price < 50] => sort((), function($p) { $p/name })"
+        """//list/item/@quant ! number(.)"""
     )
     print(json.dumps(result, indent=2))
 
     # Example: Use XQuery for complex analysis
     xquery_result = server.xquery_query("""
-        for $category in distinct-values(//product/category)
-        return map {
-            'category': $category,
-            'count': count(//product[category = $category]),
-            'avg_price': avg(//product[category = $category]/price)
-        }
+        for $i in //ingred  
+        return //step[contains(., $i ! normalize-space())]
     """)
     print(json.dumps(xquery_result, indent=2))
