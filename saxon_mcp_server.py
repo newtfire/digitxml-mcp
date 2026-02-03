@@ -92,8 +92,8 @@ class SaxonXMLMCPServer:
             xpath_proc = self.saxon_proc.new_xpath_processor()
             xpath_proc.set_context(xdm_item=self.xml_node)
 
-            # Compile and evaluate
-            xpath_executable = xpath_proc.compile(xpath)
+            # Evaluate
+            xpath_executable = xpath_proc.evaluate(xpath)
             result = xpath_executable.evaluate()
 
             if return_count:
@@ -232,11 +232,11 @@ class SaxonXMLMCPServer:
         try:
             # Use XPath 3.1 features to analyze structure
             queries = {
-                "root_name": "name(/*)",
+                "root_name": "//* ! name())",
                 "namespaces": "in-scope-prefixes(/*)",
-                "element_names": "distinct-values(//*[not(*)]!name())",
-                "elements_with_children": "distinct-values(//*[*]!name())",
-                "attribute_names": "distinct-values(//@*/name())"
+                "elements_with_children": "distinct-values(//*[*] ! name())",
+                "terminal_leaf_elements": "distinct-values(//*[not(*)] ! name())",
+                "attribute_names": "distinct-values(//@* ! name())"
             }
 
             structure = {}

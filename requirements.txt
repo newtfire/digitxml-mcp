@@ -31,4 +31,4 @@ starlette==0.50.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 uvicorn==0.40.0
-wheel @ file:///usr/local/Cellar/python%403.12/3.12.9/libexec/wheel-0.45.1-py3-none-any.whl#sha256=9e1d46c70b64e17215059896fbdf70ed1c4ab6696302458ffd8d4932dd04bb7c
+wheel==0.45.1
