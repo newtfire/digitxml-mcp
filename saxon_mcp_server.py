@@ -23,7 +23,19 @@ class SaxonXMLMCPServer:
         self.xml_path = Path(xml_path)
         self.schema_path = Path(schema_path) if schema_path else None
         self.backup_dir = Path(backup_dir)
-        self.backup_dir.mkdir(exist_ok=True)
+        
+        # Try to create backup directory, but don't fail if read-only
+        try:
+            self.backup_dir.mkdir(exist_ok=True)
+        except (OSError, PermissionError) as e:
+            # If we can't create backups dir, use temp directory
+            import tempfile
+            self.backup_dir = Path(tempfile.gettempdir()) / "digitxml_backups"
+            try:
+                self.backup_dir.mkdir(exist_ok=True)
+            except:
+                # Last resort - just use temp dir itself
+                self.backup_dir = Path(tempfile.gettempdir())
 
         # Initialize Saxon processor
         self.saxon_proc = PySaxonProcessor(license=False)  # HE version
@@ -53,12 +65,23 @@ class SaxonXMLMCPServer:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_path = self.backup_dir / f"backup_{timestamp}.xml"
 
-        # Serialize current document
-        serializer = self.saxon_proc.new_serializer()
-        serializer.set_output_file(str(backup_path))
-        serializer.serialize_xdm_value(self.xml_node)
-
-        return str(backup_path)
+        try:
+            # Serialize current document
+            serializer = self.saxon_proc.new_serializer()
+            serializer.set_output_file(str(backup_path))
+            serializer.serialize_xdm_value(self.xml_node)
+            return str(backup_path)
+        except (OSError, PermissionError) as e:
+            # If backup fails, return error message but don't crash
+            import tempfile
+            temp_backup = Path(tempfile.gettempdir()) / f"digitxml_backup_{timestamp}.xml"
+            try:
+                serializer = self.saxon_proc.new_serializer()
+                serializer.set_output_file(str(temp_backup))
+                serializer.serialize_xdm_value(self.xml_node)
+                return f"{temp_backup} (temporary - original backup dir not writable)"
+            except:
+                return f"Backup failed: {str(e)} (read-only filesystem)"
 
     def reload_document(self):
         """Reload XML document from file"""
