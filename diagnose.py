@@ -55,6 +55,8 @@ def check_dependencies():
     """Check if required packages are installed"""
     print_header("Dependencies")
     
+    from importlib.metadata import version, PackageNotFoundError
+    
     required = {
         'saxonche': '12.9.0',
         'mcp': '1.25.0',
@@ -66,39 +68,29 @@ def check_dependencies():
     all_installed = True
     for package, expected_version in required.items():
         try:
-            # Try importing the package
-            if package == 'mcp':
-                # MCP has submodules, try importing server
-                from mcp.server import Server
-                mod = __import__('mcp')
-            else:
-                mod = __import__(package)
-            
-            # Try to get version
-            version = 'unknown'
-            if hasattr(mod, '__version__'):
-                version = mod.__version__
-            elif package == 'mcp':
-                # MCP might not have __version__ but if import worked, it's installed
-                version = 'installed'
+            # Get installed version using importlib.metadata
+            installed_version = version(package)
             
             # Check version if expected
-            if expected_version and version != 'unknown' and version != 'installed':
-                status = version.startswith(expected_version.split('.')[0])
-                msg = f"v{version}" + ("" if status else f" (expected {expected_version})")
-            elif version == 'installed':
-                # For packages without version, if import worked, it's OK
-                status = True
-                msg = "installed (version check skipped)"
+            if expected_version:
+                # Compare major version
+                expected_major = expected_version.split('.')[0]
+                installed_major = installed_version.split('.')[0]
+                status = installed_major == expected_major
+                msg = f"v{installed_version}" + ("" if status else f" (expected {expected_version})")
             else:
+                # No specific version required, just check it's installed
                 status = True
-                msg = f"v{version}"
+                msg = f"v{installed_version}"
             
             print_check(package, status, msg)
             all_installed = all_installed and status
             
-        except ImportError as e:
-            print_check(package, False, f"Not installed ({str(e)})")
+        except PackageNotFoundError:
+            print_check(package, False, "Not installed")
+            all_installed = False
+        except Exception as e:
+            print_check(package, False, f"Error checking version: {str(e)}")
             all_installed = False
     
     return all_installed
