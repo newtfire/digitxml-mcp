@@ -1,61 +1,81 @@
-# DigitAI XML-MCP: Professional XML Processing with Claude Desktop
+# DigitAI XML-MCP: XML Processing with Claude Desktop
 
 AI-powered XML analysis using Saxon-HE (XPath 3.1, XQuery 3.1, XSLT 3.0) through Claude Desktop's natural language interface.
 
 ---
 
-## Quick Start
+## Installation (5 minutes)
 
 ### Prerequisites
-- **Python 3.12**
-- **Claude Desktop** ([download](https://claude.com/download))
+- **Python 3.12** ([Download](https://www.python.org/downloads/release/python-31212/))
+- **Claude Desktop** ([Download](https://claude.com/download))
 
-### Installation (5 minutes)
+### Instructions (5 minutes)
+1. Clone the repository.
 
-```bash
-# 1. Set up environment
-cd digitxml-mcp
-python3.12 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+    ```bash
+    git clone https://github.com/newtfire/digitxml-mcp.git
+    ```
 
-# 2. Install dependencies
-pip install -r requirements.txt
+1. Set up a Python virtual environment.
 
-# 3. Verify installation
-python diagnose.py
-```
+    ```bash
+    cd digitxml-mcp
+    python3.12 -m venv .venv
+   
+    # MacOS:
+    source .venv/bin/activate  
+   
+    # Windows: 
+    source .venv\Scripts\activate
+    ```
+   
+1. Install dependencies.
 
-### Configure Claude Desktop
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-**macOS:** Edit `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windows:** Edit `%APPDATA%\Claude\claude_desktop_config.json`
+1. Verify installation.
 
-Add this (replace with YOUR actual path):
+    ```bash
+    python3.12 diagnose.py
+    ```
 
-```json
-{
-  "mcpServers": {
-    "digitxml-mcp": {
-      "command": "/path/to/digitxml-mcp/.venv/bin/python",
-      "args": ["/path/to/digitxml-mcp/mcp_server.py"]
+1. Configure Claude Desktop.
+
+    ```bash
+    # MacOS: 
+    nano ~/Library/Application\ Support/Claude/claude_desktop_config.json
+   
+    # Windows:
+    nano %APPDATA%\Claude\claude_desktop_config.json
+    ```
+
+1. Add the "mcpServers" section below the preferences (replace with YOUR path):
+
+    ```json
+    {
+      "preferences": {
+        "sidebarMode": "chat",
+        "coworkScheduledTasksEnabled": false
+      },
+      "mcpServers": {
+        "digitxml-mcp": {
+          "command": "/Users/USERNAME/Documents/GitHub/repos/digitxml-mcp/.venv/bin/python",
+          "args": [
+            "/Users/USERNAME/Documents/GitHub/repos/digitxml-mcp/mcp_server.py"
+          ]
+        }
+      }
     }
-  }
-}
-```
+    ```
 
-**Get your path:**
-```bash
-cd digitxml-mcp
-pwd
-echo "$(pwd)/.venv/bin/python"
-echo "$(pwd)/mcp_server.py"
-```
-
-### Test It
+### Smoke Test
 
 1. **Restart Claude Desktop** (completely quit and reopen)
 2. Ask Claude: `What XML tools do you have available?`
-3. Should see: `xpath_query, xquery_query, xslt_transform...`
+3. You should see: `xpath_query, xquery_query, xslt_transform...`
 
 ---
 
