@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?xml-model href="../schemas/recipe.rnc" type="application/relax-ng-compact-syntax"?>
-<recipe><healthData>About this recipe Healthiness : (71 votes)</healthData>
+<?xml version="1.0" encoding="UTF-8"?><recipe><healthData>About this recipe Healthiness : (71 votes)</healthData>
     <!--ebb: Hi This is a comment -->
     <!--ebb 2020-08-27: I like putting initials on my comments, and sometimes the date, 
              especially if multiple people are writing comments on a code file. -->
@@ -22,18 +19,17 @@
         sugar, lemons, new salad vegetables and sack.</para>
     <para>We have added a non-alcoholic lemon syllabub for you to try too.</para>
     <para>For images of the cooking process see our Syllabub Pictures.</para>
-    <para type="credits">With thanks to <name type="person">Ian Pycroft</name> of <name
-            type="organization">Black Knight Historical</name> and to <name type="organization">The
+    <para type="credits">With thanks to <name type="person">Ian Pycroft</name> of <name type="organization">Black Knight Historical</name> and to <name type="organization">The
             Georgian House, <name type="place">Bristol</name></name>.</para>
     <section kind="ingred">
         <heading>Ingredients</heading>
-        <list><it quant="1" unit="fruit">1 <ingred>lemon</ingred></it>
-            <item quant=".25" unit="pint">1/4 pint <ingred>sack</ingred> (pale or dark)</item>
-            <item qant="2 3" unit="ounce">2-3 oz <ingred>caster
+        <list><item quantMin="1" unit="fruit">1 <ingred>lemon</ingred></item>
+            <item quantMin=".25" unit="pint">1/4 pint <ingred>sack</ingred> (pale or dark)</item>
+            <item quantMin="2" quantMax="3" unit="ounce">2-3 oz <ingred>caster
                 sugar</ingred></item><!-- This is one way to handle multiple good values in an attribugte,
                 with quant="2 3": It means quant can be 2 or 3.-->
-            <item quant=".5" unit="pint">1/2 pint <ingred>double cream</ingred></item>
-            <item quantLow="4" quantHigh="6" unit="Tb">4-6 tablespoons <ingred>sweet/dessert white
+            <item quantMin=".5" unit="pint">1/2 pint <ingred>double cream</ingred></item>
+            <item quantMin="4" quantMax="6" unit="Tb">4-6 tablespoons <ingred>sweet/dessert white
                     wine</ingred>
             </item>
         </list>
@@ -61,7 +57,7 @@
             <step num="5"><action>Add</action> sherry gradually</step>
             <step num="6"><action>Spoon</action> a little wine into glass and spoon on whipped
                 cream</step>
-            <step><action>Decorate</action> the top with lemon peel sticks</step>
+            <step num="7"><action>Decorate</action> the top with lemon peel sticks</step>
             <step num="8"><action>Serve</action> with Shrewsberry cakes</step>
         </listStep>
     </section>

@@ -4,7 +4,7 @@ DigitAI XML-MCP Server
 Proper MCP Server implementation using the MCP SDK
 Provides XML processing tools via Saxon-HE and validation via Jingtrang
 """
-
+import subprocess
 import asyncio
 import json
 import logging
@@ -94,6 +94,88 @@ class DigitXMLMCPServer:
                 backup_dir=str(backup_path)
             )
             logger.info(f"Saxon server initialized with {xml_path}")
+
+    def _resolve_path(self, path_str: str) -> Path:
+        """Resolve a path relative to the server directory if not absolute"""
+        p = Path(path_str)
+        if not p.is_absolute():
+            return self.server_dir / p
+        return p
+
+    def _run_jingtrang(self, schema_path: str = None, xml_path: str = None) -> dict:
+        """
+        Run Jingtrang (pyjing) validation against the XML document.
+        Uses compact syntax (-c flag) for .rnc schemas.
+        """
+        # Resolve schema path: use provided, or fall back to config
+        if schema_path:
+            resolved_schema = self._resolve_path(schema_path)
+        else:
+            configured_schema = self.config.get('xml_schema_path')
+            if not configured_schema:
+                return {
+                    "success": False,
+                    "valid": False,
+                    "error": "No schema path configured or provided"
+                }
+            resolved_schema = self._resolve_path(configured_schema)
+
+        # Resolve XML path: use provided, or fall back to config
+        if xml_path:
+            resolved_xml = self._resolve_path(xml_path)
+        else:
+            resolved_xml = self._resolve_path(self.config['xml_data_path'])
+
+        # Verify files exist
+        if not resolved_schema.exists():
+            return {"success": False, "valid": False,
+                    "error": f"Schema file not found: {resolved_schema}"}
+        if not resolved_xml.exists():
+            return {"success": False, "valid": False,
+                    "error": f"XML file not found: {resolved_xml}"}
+
+        # Build command: use -c flag for compact (.rnc) schemas
+        cmd = ["pyjing"]
+        if resolved_schema.suffix == ".rnc":
+            cmd.append("-c")
+        cmd.extend([str(resolved_schema), str(resolved_xml)])
+
+        logger.info(f"Running jingtrang: {' '.join(cmd)}")
+
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+
+            stdout = proc.stdout.strip()
+            stderr = proc.stderr.strip()
+            output = stderr if stderr else stdout
+
+            if proc.returncode == 0 and not output:
+                return {
+                    "success": True, "valid": True,
+                    "message": "Document is valid according to schema",
+                    "schema": str(resolved_schema),
+                    "xml": str(resolved_xml)
+                }
+            else:
+                errors = [line.strip() for line in output.splitlines() if line.strip()]
+                return {
+                    "success": True, "valid": False,
+                    "error_count": len(errors),
+                    "errors": errors,
+                    "schema": str(resolved_schema),
+                    "xml": str(resolved_xml)
+                }
+
+        except FileNotFoundError:
+            return {"success": False, "valid": False,
+                    "error": "pyjing not found. Is jingtrang installed? (pip install jingtrang)"}
+        except subprocess.TimeoutExpired:
+            return {"success": False, "valid": False,
+                    "error": "Validation timed out after 30 seconds"}
+        except Exception as e:
+            return {"success": False, "valid": False,
+                    "error": f"Unexpected error running jingtrang: {str(e)}"}
+
     
     def _register_tools(self):
         """Register all MCP tools"""
@@ -165,6 +247,23 @@ class DigitXMLMCPServer:
                             }
                         },
                         "required": ["xslt"]
+                    }
+                ),
+                Tool(
+                    name="validate_schema",
+                    description="Validate the XML document against a Relax NG schema using Jingtrang (pyjing). Supports both .rnc (compact) and .rng (XML) schema formats. Returns validation errors with line numbers if the document is invalid.",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "schema_path": {
+                                "type": "string",
+                                "description": "Path to the Relax NG schema file (.rnc or .rng). If omitted, uses the schema from config.json."
+                            },
+                            "xml_path": {
+                                "type": "string",
+                                "description": "Path to the XML file to validate. If omitted, uses the XML document from config.json."
+                            }
+                        }
                     }
                 ),
                 Tool(
@@ -269,8 +368,29 @@ class DigitXMLMCPServer:
         @self.mcp_server.call_tool()
         async def call_tool(name: str, arguments: Any) -> list[TextContent]:
             """Handle tool calls"""
+            # validate_schema doesn't need Saxon, so handle it first
+            if name == "validate_schema":
+                try:
+                    result = self._run_jingtrang(
+                        schema_path=arguments.get("schema_path"),
+                        xml_path=arguments.get("xml_path")
+                    )
+                    return [TextContent(
+                        type="text",
+                        text=json.dumps(result, indent=2)
+                    )]
+                except Exception as e:
+                    logger.error(f"Error executing validate_schema: {e}", exc_info=True)
+                    return [TextContent(
+                        type="text",
+                        text=json.dumps({
+                            "success": False,
+                            "error": str(e),
+                            "tool": name
+                        }, indent=2)
+                    )]
             self._initialize_saxon()
-            
+
             try:
                 if name == "xpath_query":
                     result = self.saxon_server.xpath_query(
