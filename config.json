@@ -3,8 +3,20 @@
   "xml_schema_path": "./schemas/recipe.rnc",
   "backup_dir": "./backups",
   "log_dir": "./logs",
+  "output_dir": "./outputs",
+  "xslt_dir": "./outputs",
+
   "server": {
     "host": "localhost",
     "port": 3000
+  },
+
+  "ai_instructions": {
+    "read_input_from": "Always read source XML from xml_data_path. This is the authoritative input file and should NOT be overwritten unless you are explicitly asked to restore it to a prior state.",
+    "write_output_to": "Always save transformed XML to output_dir. Never save output XML back to xml_data_path without explicit user confirmation.",
+    "save_xslt_to": "Save every XSLT stylesheet you generate to xslt_dir using the naming convention YYYY-MM-DD-description.xsl (e.g. 2026-04-09-syllabubFix.xsl). Include a comment header in each file noting the date, authors, purpose, input, and output.",
+    "schema_resolution": "To find the correct schema for validation, first read the xml-model processing instruction from the XML document (processing-instruction('xml-model')) and extract its href attribute. Resolve that href as a relative URI against the document's base-uri() to get the absolute schema path. Only fall back to xml_schema_path from this config if no xml-model processing instruction is present in the document.",
+    "validation": "After any transformation, validate the output file using the schema resolved from the document's xml-model processing instruction (see schema_resolution) and report results.",
+    "reload_after_disk_write": "The MCP server holds the source document in memory. After saving a file to disk, call reload_document if you need subsequent tool calls to operate on the updated on-disk version."
   }
 }

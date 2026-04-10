@@ -4,6 +4,7 @@ DigitAI XML-MCP Server
 Proper MCP Server implementation using the MCP SDK
 Provides XML processing tools via Saxon-HE and validation via Jingtrang
 """
+import sys
 import subprocess
 import asyncio
 import json
@@ -135,7 +136,10 @@ class DigitXMLMCPServer:
                     "error": f"XML file not found: {resolved_xml}"}
 
         # Build command: use -c flag for compact (.rnc) schemas
-        cmd = ["pyjing"]
+        # cmd = ["pyjing"]
+        venv_bin = Path(sys.executable).parent
+        pyjing_path = venv_bin / "pyjing"
+        cmd = [str(pyjing_path)]
         if resolved_schema.suffix == ".rnc":
             cmd.append("-c")
         cmd.extend([str(resolved_schema), str(resolved_xml)])
