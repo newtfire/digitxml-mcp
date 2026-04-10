@@ -20,7 +20,9 @@ class SaxonXMLMCPServer:
     """MCP Server for XML operations with Saxon XPath 3.1/XQuery/XSLT 3.0 support"""
 
     def __init__(self, xml_path: str, schema_path: str = None, backup_dir: str = "./backups"):
-        self.xml_path = Path(xml_path)
+        # self.xml_path = Path(xml_path)
+        # ebb: changing the xml_path to support reading as a file instead of a string conversion of a file (see also lines 49 and 94.)
+        self.xml_path = Path(xml_path).resolve()
         self.schema_path = Path(schema_path) if schema_path else None
         self.backup_dir = Path(backup_dir)
         
@@ -40,10 +42,11 @@ class SaxonXMLMCPServer:
         # Initialize Saxon processor
         self.saxon_proc = PySaxonProcessor(license=False)  # HE version
 
-        # Load XML document
-        with open(self.xml_path, 'r', encoding='utf-8') as f:
-            xml_text = f.read()
-        self.xml_node = self.saxon_proc.parse_xml(xml_text=xml_text)
+        # Load XML document. ebb: UPDATED on 2026-04-09 to read document instead of convert it to a string
+        # with open(self.xml_path, 'r', encoding='utf-8') as f:
+        #     xml_text = f.read()
+        # self.xml_node = self.saxon_proc.parse_xml(xml_text=xml_text)
+        self.xml_node = self.saxon_proc.parse_xml(xml_file_name=str(self.xml_path))
 
         # Initialize specialized processors
         self.xpath_proc = self.saxon_proc.new_xpath_processor()
@@ -85,9 +88,10 @@ class SaxonXMLMCPServer:
 
     def reload_document(self):
         """Reload XML document from file"""
-        with open(self.xml_path, 'r', encoding='utf-8') as f:
-            xml_text = f.read()
-        self.xml_node = self.saxon_proc.parse_xml(xml_text=xml_text)
+        # with open(self.xml_path, 'r', encoding='utf-8') as f:
+        #     xml_text = f.read()
+        # self.xml_node = self.saxon_proc.parse_xml(xml_text=xml_text)
+        self.xml_node = self.saxon_proc.parse_xml(xml_file_name=str(self.xml_path))
         self.xpath_proc.set_context(xdm_item=self.xml_node)
 
     def save_document(self):
