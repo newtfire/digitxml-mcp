@@ -23,9 +23,9 @@
             Georgian House, <name type="place">Bristol</name></name>.</para>
     <section kind="ingred">
         <heading>Ingredients</heading>
-        <list><it quant="1" unit="fruit">1 <ingred>lemon</ingred></it>
+        <list><item quant="1" unit="fruit">1 <ingred>lemon</ingred></item>
             <item quant=".25" unit="pint">1/4 pint <ingred>sack</ingred> (pale or dark)</item>
-            <item qant="2 3" unit="ounce">2-3 oz <ingred>caster
+            <item quant="2 3" unit="ounce">2-3 oz <ingred>caster
                 sugar</ingred></item><!-- This is one way to handle multiple good values in an attribugte,
                 with quant="2 3": It means quant can be 2 or 3.-->
             <item quant=".5" unit="pint">1/2 pint <ingred>double cream</ingred></item>
@@ -57,7 +57,7 @@
             <step num="5"><action>Add</action> sherry gradually</step>
             <step num="6"><action>Spoon</action> a little wine into glass and spoon on whipped
                 cream</step>
-            <step><action>Decorate</action> the top with lemon peel sticks</step>
+            <step num="7"><action>Decorate</action> the top with lemon peel sticks</step>
             <step num="8"><action>Serve</action> with Shrewsberry cakes</step>
         </listStep>
     </section>
