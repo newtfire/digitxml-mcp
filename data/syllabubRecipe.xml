@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?xml-model href="../schemas/recipe.rnc" type="application/relax-ng-compact-syntax"?>
 <recipe><healthData>About this recipe Healthiness : (71 votes)</healthData>
     <!--ebb: Hi This is a comment -->
