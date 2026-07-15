@@ -2,6 +2,14 @@
 
 AI-powered XML analysis using Saxon-HE (XPath 3.1, XQuery 3.1, XSLT 3.0) through Claude Desktop's natural language interface.
 
+## 2026-07-15: Migrating the DigitAI XML-MCP project to Codeberg
+We are archiving this repository and project to Codeberg for safer development with Docker containers and for experimentation with small language models via ollama as an alternative to Claude Desktop. 
+
+New work is continuing on Codeberg at these repositories:
+* <https://codeberg.org/newtfire/digitxml-mcp>
+* <https://codeberg.org/newtfire/ollama-mcp-bridge>
+
+
 ---
 
 ## Installation (5 minutes)
