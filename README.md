@@ -1,14 +1,12 @@
 # DigitAI XML-MCP: XML Processing with Claude Desktop
 
-AI-powered XML analysis using Saxon-HE (XPath 3.1, XQuery 3.1, XSLT 3.0) through Claude Desktop's natural language interface.
+Localized AI-powered XML analysis using Saxon-HE (XPath 3.1, XQuery 3.1, XSLT 3.0) relying on Claude Desktop's natural language interface.
+NOTE: This repository represents an early stage of work and is no longer being actively supported. We retain them as a public archive of the first successful stage of our project to design customized MCP tools with XML-stack technologies.
 
 ## 2026-07-15: Migrating the DigitAI XML-MCP project to Codeberg
 We are archiving this repository and project to Codeberg for safer development with Docker containers and for experimentation with small language models via ollama as an alternative to Claude Desktop. 
 
-New work is continuing on Codeberg at these repositories:
-* <https://codeberg.org/newtfire/digitxml-mcp>
-* <https://codeberg.org/newtfire/ollama-mcp-bridge>
-
+**New work is continuing on Codeberg at <https://codeberg.org/newtfire/digitxml-mcp>.** 
 
 ---
 
